@@ -3,6 +3,25 @@ package tankgame;
 public class Tank {
     private int x;//坦克横坐标
     private int y;//坦克纵坐标
+    private int speed = 1;
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    private int direct;//坦克方向
+
+    public int getDirect() {
+        return direct;
+    }
+
+    public void setDirect(int direct) {
+        this.direct = direct;
+    }
 
     public Tank(int x, int y) {
         this.x = x;
@@ -24,4 +43,18 @@ public class Tank {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void moveUp(){
+        y -= speed;
+    }
+    public void moveRight(){
+        x += speed;
+    }
+    public void moveLeft(){
+        y += speed;
+    }
+    public void moveDown(){
+        x -= speed;
+    }
+
 }
