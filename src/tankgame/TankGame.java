@@ -2,13 +2,15 @@ package tankgame;
 
 import javax.swing.*;
 
-public class TankGame01 extends JFrame {
+public class TankGame extends JFrame {
     MyPanel mp = null;
     public static void main(String[] args){
-        TankGame01 tankGame01 = new TankGame01();
+        TankGame tankGame01 = new TankGame();
     }
-    public TankGame01(){
+    public TankGame(){
         mp = new MyPanel();
+        Thread thread = new Thread(mp);
+        thread.start();
         this.add(mp);
         this.setSize(1000,750);
         this.addKeyListener(mp);

@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import java.security.Key;
 import java.util.Vector;
 
-public class MyPanel extends JPanel  implements KeyListener {
+public class MyPanel extends JPanel  implements KeyListener,Runnable{
     //定义玩家坦克
     Hero hero = null;
     Vector<EnemyTank> enemyTanks = new Vector<>();
@@ -27,6 +27,9 @@ public class MyPanel extends JPanel  implements KeyListener {
         super.paint(g);
         g.fillRect(0,0,1000,750);//填充矩形
         drawTank(hero.getX(),hero.getY(),g,hero.getDirect(),0);
+        if(hero.shot != null && hero.shot.isLive != false){
+            g.draw3DRect(hero.shot.x,hero.shot.y,2,2,false);
+        }
         for (int i=0;i<enemyTanks.size();i++){
             EnemyTank enemyTank = enemyTanks.get(i);
             drawTank(enemyTank.getX(),enemyTank.getY(),g,enemyTank.getDirect(),1);
@@ -99,6 +102,9 @@ public class MyPanel extends JPanel  implements KeyListener {
             hero.setDirect(2);
             hero.moveLeft();
         }
+        if(e.getKeyCode() == KeyEvent.VK_J){
+            hero.shotEnemyTank();
+        }
         //重绘
         this.repaint();
     }
@@ -106,5 +112,17 @@ public class MyPanel extends JPanel  implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.repaint();
+        }
     }
 }
