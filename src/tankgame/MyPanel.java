@@ -18,6 +18,9 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         for (int i=0;i<enemyTankSize;i++){
             EnemyTank enemyTank = new EnemyTank((100 * (i+1)),0);
             enemyTank.setDirect(2);
+            Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY() + 60,enemyTank.getDirect());
+            enemyTank.shots.add(shot);
+            new Thread(shot).start();
             enemyTanks.add(enemyTank);
         }
     }
@@ -33,6 +36,14 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         for (int i=0;i<enemyTanks.size();i++){
             EnemyTank enemyTank = enemyTanks.get(i);
             drawTank(enemyTank.getX(),enemyTank.getY(),g,enemyTank.getDirect(),1);
+            for (int j=0;j<enemyTank.shots.size();j++){
+                Shot shot = enemyTank.shots.get(j);
+                if(shot.isLive){
+                    g.draw3DRect(shot.x,shot.y,1,1,false);
+                }else {
+                    enemyTank.shots.remove(shot);
+                }
+            }
         }
     }
 
