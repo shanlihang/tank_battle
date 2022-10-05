@@ -35,13 +35,15 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         }
         for (int i=0;i<enemyTanks.size();i++){
             EnemyTank enemyTank = enemyTanks.get(i);
-            drawTank(enemyTank.getX(),enemyTank.getY(),g,enemyTank.getDirect(),1);
-            for (int j=0;j<enemyTank.shots.size();j++){
-                Shot shot = enemyTank.shots.get(j);
-                if(shot.isLive){
-                    g.draw3DRect(shot.x,shot.y,1,1,false);
-                }else {
-                    enemyTank.shots.remove(shot);
+            if (enemyTank.isLive) {
+                drawTank(enemyTank.getX(), enemyTank.getY(), g, enemyTank.getDirect(), 1);
+                for (int j = 0; j < enemyTank.shots.size(); j++) {
+                    Shot shot = enemyTank.shots.get(j);
+                    if (shot.isLive) {
+                        g.draw3DRect(shot.x, shot.y, 1, 1, false);
+                    } else {
+                        enemyTank.shots.remove(shot);
+                    }
                 }
             }
         }
@@ -92,6 +94,25 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         }
     }
 
+    //判断子弹是否击中
+    public static void hitTank(Shot s,EnemyTank enemyTank){
+        switch (enemyTank.getDirect()){
+            case 0:
+            case 2:
+                if(s.x > enemyTank.getX() && s.x < enemyTank.getX() + 40 && s.y > enemyTank.getY() && s.y < enemyTank.getY() + 60){
+                    s.isLive = false;
+                    enemyTank.isLive = false;
+                }
+                break;
+            case 1:
+            case 3:
+                if(s.x > enemyTank.getX() && s.x < enemyTank.getX() + 60 && s.y > enemyTank.getY() && s.y < enemyTank.getY() + 40){
+                    s.isLive = false;
+                    enemyTank.isLive = false;
+                }
+                break;
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -132,6 +153,13 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            //判断是否击中敌人坦克
+            if ( hero.shot != null && hero.shot.isLive){
+                for (int i=0;i<enemyTanks.size();i++){
+                    EnemyTank enemyTank = enemyTanks.get(i);
+                    hitTank(hero.shot,enemyTank);
+                }
             }
             this.repaint();
         }
