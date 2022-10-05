@@ -19,7 +19,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     Image image2 = null;
     Image image3 = null;
     public MyPanel(){
-        hero = new Hero(100,100);
+        hero = new Hero(700,100);
         hero.setSpeed(2);
         for (int i=0;i<enemyTankSize;i++){
             EnemyTank enemyTank = new EnemyTank((100 * (i+1)),0);
@@ -40,9 +40,19 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     public void paint(Graphics g) {
         super.paint(g);
         g.fillRect(0,0,1000,750);//填充矩形
-        drawTank(hero.getX(),hero.getY(),g,hero.getDirect(),0);
-        if(hero.shot != null && hero.shot.isLive != false){
-            g.draw3DRect(hero.shot.x,hero.shot.y,2,2,false);
+        if (hero != null && hero.isLive) {
+            drawTank(hero.getX(), hero.getY(), g, hero.getDirect(), 0);
+        }
+//        if(hero.shot != null && hero.shot.isLive != false){
+//            g.draw3DRect(hero.shot.x,hero.shot.y,2,2,false);
+//        }
+        for (int i=0;i<hero.shots.size();i++){
+            Shot shot = hero.shots.get(i);
+            if (shot != null && shot.isLive == true){
+                g.draw3DRect(hero.shot.x,hero.shot.y,1,1,false);
+            } else {
+                hero.shots.remove(shot);
+            }
         }
         for (int i = 0;i<bombs.size();i++){
             Bomb bomb = bombs.get(i);
@@ -120,7 +130,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     }
 
     //判断子弹是否击中
-    public void hitTank(Shot s,EnemyTank enemyTank){
+    public void hitTank(Shot s,Tank enemyTank){
         switch (enemyTank.getDirect()){
             case 0:
             case 2:
@@ -144,6 +154,28 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                 break;
         }
     }
+    public void hitEnemyTank(){
+        for (int j=0;j<hero.shots.size();j++){
+            Shot shot = hero.shots.get(j);
+            if(shot != null && shot.isLive){
+                for (int i=0;i<enemyTanks.size();i++){
+                    EnemyTank enemyTank = enemyTanks.get(i);
+                    hitTank(hero.shot,enemyTank);
+                }
+            }
+        }
+    }
+    public void hitHero(){
+        for (int i=0;i<enemyTanks.size();i++){
+            EnemyTank enemyTank = enemyTanks.get(i);
+            for (int j=0;j<enemyTank.shots.size();j++){
+                Shot shot = enemyTank.shots.get(j);
+                if (hero.isLive && shot.isLive){
+                    hitTank(shot,hero);
+                }
+            }
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -154,21 +186,34 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             hero.setDirect(0);
-            hero.moveUp();
+            if (hero.getY() > 0) {
+                hero.moveUp();
+            }
         } else if (e.getKeyCode() == KeyEvent.VK_D) {
             hero.setDirect(1);
-            hero.moveRight();
+            if (hero.getX()>0) {
+                hero.moveRight();
+            }
         } else if (e.getKeyCode() == KeyEvent.VK_A) {
             hero.setDirect(3);
-            hero.moveDown();
+            if (hero.getY() + 60 < 750) {
+                hero.moveDown();
+            }
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
             hero.setDirect(2);
-            hero.moveLeft();
+            if (hero.getX() + 60 < 1000)
+                hero.moveLeft();
         }
         if(e.getKeyCode() == KeyEvent.VK_J){
+            //发射一颗子弹
+//            if (hero.shot == null || !hero.shot.isLive) {
+//                hero.shotEnemyTank();}
+            //发射多颗子弹
             hero.shotEnemyTank();
+
         }
         //重绘
+        hitEnemyTank();
         this.repaint();
     }
 
@@ -192,6 +237,8 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                     hitTank(hero.shot,enemyTank);
                 }
             }
+            hitEnemyTank();
+            hitHero();
             this.repaint();
         }
     }

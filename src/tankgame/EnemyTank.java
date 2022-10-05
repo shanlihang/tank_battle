@@ -12,10 +12,31 @@ public class EnemyTank extends Tank implements Runnable{
     @Override
     public void run() {
         while (true){
+            if (isLive && shots.size() <= 5){
+                Shot s = null;
+                switch (getDirect()){
+                    case 0:
+                        s = new Shot(getX() + 20,getY(),0);
+                        break;
+                    case 1:
+                        s = new Shot(getX() + 60,getY() +20 ,1);
+                        break;
+                    case 2:
+                        s = new Shot(getX() + 20,getY() + 60,2);
+                        break;
+                    case 3:
+                        s = new Shot(getX(),getY() + 20,3);
+                        break;
+                }
+                shots.add(s);
+                new Thread(s).start();
+            }
             switch (getDirect()){
                 case 0:
                     for (int i=0;i<30;i++){
-                        moveUp();
+                        if (getY() > 0) {
+                            moveUp();
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
@@ -25,7 +46,9 @@ public class EnemyTank extends Tank implements Runnable{
                     break;
                 case 1:
                     for (int i=0;i<30;i++){
-                        moveRight();
+                        if (getX() + 60 < 1000) {
+                            moveRight();
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
@@ -35,7 +58,11 @@ public class EnemyTank extends Tank implements Runnable{
                     break;
                 case 2:
                     for (int i=0;i<30;i++){
-                        moveDown();
+                        if (getY() + 60 < 750) {
+                            if (getX() > 0) {
+                                moveDown();
+                            }
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
@@ -45,7 +72,9 @@ public class EnemyTank extends Tank implements Runnable{
                     break;
                 case 3:
                     for (int i=0;i<30;i++){
-                        moveLeft();
+                        if (getX() > 0) {
+                            moveLeft();
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
