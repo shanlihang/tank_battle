@@ -24,6 +24,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         for (int i=0;i<enemyTankSize;i++){
             EnemyTank enemyTank = new EnemyTank((100 * (i+1)),0);
             enemyTank.setDirect(2);
+            new Thread(enemyTank).start();
             Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY() + 60,enemyTank.getDirect());
             enemyTank.shots.add(shot);
             new Thread(shot).start();
@@ -126,6 +127,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                 if(s.x > enemyTank.getX() && s.x < enemyTank.getX() + 40 && s.y > enemyTank.getY() && s.y < enemyTank.getY() + 60){
                     s.isLive = false;
                     enemyTank.isLive = false;
+                    enemyTanks.remove(enemyTank);
                     Bomb bomb = new Bomb(enemyTank.getX(),enemyTank.getY());
                     bombs.add(bomb);
                 }
@@ -135,6 +137,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                 if(s.x > enemyTank.getX() && s.x < enemyTank.getX() + 60 && s.y > enemyTank.getY() && s.y < enemyTank.getY() + 40){
                     s.isLive = false;
                     enemyTank.isLive = false;
+                    enemyTanks.remove(enemyTank);
                     Bomb bomb = new Bomb(enemyTank.getX(),enemyTank.getY());
                     bombs.add(bomb);
                 }
