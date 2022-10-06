@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Reader;
 import java.security.Key;
 import java.util.Vector;
 
@@ -19,6 +20,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     Image image2 = null;
     Image image3 = null;
     public MyPanel(){
+        Recorder.setEnemyTanks(enemyTanks);
         hero = new Hero(700,100);
         hero.setSpeed(2);
         for (int i=0;i<enemyTankSize;i++){
@@ -36,10 +38,20 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         image3 = Toolkit.getDefaultToolkit().getImage("src/img/bomb_3.gif");
     }
 
+    public void showInfo(Graphics g) {
+        g.setColor(Color.BLACK);
+        Font font = new Font("宋体", Font.BOLD, 25);
+        g.setFont(font);
+        g.drawString("您已累计击毁敌方坦克",1020,30);
+        drawTank(1020,60,g,0,0);
+        g.setColor(Color.RED);
+        g.drawString(Recorder.getAllEnemyTankNum() + "",1080,100);
+    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         g.fillRect(0,0,1000,750);//填充矩形
+        showInfo(g);
         if (hero != null && hero.isLive) {
             drawTank(hero.getX(), hero.getY(), g, hero.getDirect(), 0);
         }
@@ -138,6 +150,9 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                     s.isLive = false;
                     enemyTank.isLive = false;
                     enemyTanks.remove(enemyTank);
+                    if (enemyTank instanceof EnemyTank){
+                        Recorder.addAllEnemyTankNum();
+                    }
                     Bomb bomb = new Bomb(enemyTank.getX(),enemyTank.getY());
                     bombs.add(bomb);
                 }
@@ -148,6 +163,9 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
                     s.isLive = false;
                     enemyTank.isLive = false;
                     enemyTanks.remove(enemyTank);
+                    if (enemyTank instanceof EnemyTank){
+                        Recorder.addAllEnemyTankNum();
+                    }
                     Bomb bomb = new Bomb(enemyTank.getX(),enemyTank.getY());
                     bombs.add(bomb);
                 }
