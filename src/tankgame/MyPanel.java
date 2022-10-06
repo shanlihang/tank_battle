@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.security.Key;
@@ -22,7 +23,14 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     Image image2 = null;
     Image image3 = null;
     public MyPanel(String key) throws IOException {
-        nodes = Recorder.getNodesAndEnemyTankRec();
+        File file = new File(Recorder.getRecordFile());
+        if (file.exists()){
+            nodes = Recorder.getNodesAndEnemyTankRec();
+        } else {
+            System.out.println("文件不存在，只能重新开启游戏");
+            key = "1";
+        }
+
         Recorder.setEnemyTanks(enemyTanks);
         hero = new Hero(700,100);
         hero.setSpeed(2);
@@ -57,6 +65,9 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
         image1 = Toolkit.getDefaultToolkit().getImage("src/img/bomb_1.gif");
         image2 = Toolkit.getDefaultToolkit().getImage("src/img/bomb_2.gif");
         image3 = Toolkit.getDefaultToolkit().getImage("src/img/bomb_3.gif");
+
+        //背景音乐
+        new AePlayWave("src/music/111.wav").start();
     }
 
     public void showInfo(Graphics g) {

@@ -5,6 +5,7 @@ import java.util.Vector;
 
 public class Recorder {
     private static int allEnemyTankNum = 0;
+
     private static FileWriter fw = null;
     private static BufferedWriter bw = null;
     private static BufferedReader br = null;
@@ -14,6 +15,10 @@ public class Recorder {
 
     public static void setEnemyTanks(Vector<EnemyTank> enemyTanks) {
         Recorder.enemyTanks = enemyTanks;
+    }
+
+    public static String getRecordFile() {
+        return recordFile;
     }
 
     public static Vector<Node> getNodesAndEnemyTankRec() throws IOException {
