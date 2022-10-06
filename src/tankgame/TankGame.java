@@ -4,14 +4,20 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class TankGame extends JFrame {
     MyPanel mp = null;
-    public static void main(String[] args){
+    static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
         TankGame tankGame01 = new TankGame();
     }
-    public TankGame(){
-        mp = new MyPanel();
+    public TankGame() throws IOException {
+        System.out.println("请输入选择：");
+        System.out.println("1 - 新游戏");
+        System.out.println("2 - 继续上局游戏");
+        String key = scanner.next();
+        mp = new MyPanel(key);
         Thread thread = new Thread(mp);
         thread.start();
         this.add(mp);

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.io.Reader;
 import java.security.Key;
 import java.util.Vector;
@@ -12,6 +13,7 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     //定义玩家坦克
     Hero hero = null;
     Vector<EnemyTank> enemyTanks = new Vector<>();
+    Vector<Node> nodes = new Vector<>();
     Vector<Bomb> bombs = new Vector<>();//存放爆炸图片
     int enemyTankSize = 3;
 
@@ -19,18 +21,37 @@ public class MyPanel extends JPanel  implements KeyListener,Runnable{
     Image image1 = null;
     Image image2 = null;
     Image image3 = null;
-    public MyPanel(){
+    public MyPanel(String key) throws IOException {
+        nodes = Recorder.getNodesAndEnemyTankRec();
         Recorder.setEnemyTanks(enemyTanks);
         hero = new Hero(700,100);
         hero.setSpeed(2);
-        for (int i=0;i<enemyTankSize;i++){
-            EnemyTank enemyTank = new EnemyTank((100 * (i+1)),0);
-            enemyTank.setDirect(2);
-            new Thread(enemyTank).start();
-            Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY() + 60,enemyTank.getDirect());
-            enemyTank.shots.add(shot);
-            new Thread(shot).start();
-            enemyTanks.add(enemyTank);
+        switch (key){
+            case "1":
+                for (int i=0;i<enemyTankSize;i++){
+                    EnemyTank enemyTank = new EnemyTank((100 * (i+1)),0);
+                    enemyTank.setDirect(2);
+                    new Thread(enemyTank).start();
+                    Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY() + 60,enemyTank.getDirect());
+                    enemyTank.shots.add(shot);
+                    new Thread(shot).start();
+                    enemyTanks.add(enemyTank);
+                }
+                break;
+            case "2":
+                for (int i=0;i<nodes.size();i++){
+                    Node node = nodes.get(i);
+                    EnemyTank enemyTank = new EnemyTank(node.getX(),node.getY());
+                    enemyTank.setDirect(node.getDirect());
+                    new Thread(enemyTank).start();
+                    Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY() + 60,enemyTank.getDirect());
+                    enemyTank.shots.add(shot);
+                    new Thread(shot).start();
+                    enemyTanks.add(enemyTank);
+                }
+                break;
+            default:
+                System.out.println("输入有误，请重新上输入");
         }
         //初始化图片
         image1 = Toolkit.getDefaultToolkit().getImage("src/img/bomb_1.gif");
